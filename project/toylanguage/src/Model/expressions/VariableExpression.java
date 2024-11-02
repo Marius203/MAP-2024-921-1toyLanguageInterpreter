@@ -1,7 +1,7 @@
 package Model.expressions;
 
 import Model.adts.MyIDictionary;
-import Model.exceptions.MyException;
+import Model.exceptions.VariableException;
 import Model.values.IValue;
 
 public class VariableExpression implements IExpression {
@@ -12,7 +12,9 @@ public class VariableExpression implements IExpression {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> table) throws MyException {
+    public IValue eval(MyIDictionary<String, IValue> table) throws VariableException {
+        if (!table.containsKey(id))
+            throw new VariableException("Variable " + id + " is not declared.");
         return table.get(id);
     }
 

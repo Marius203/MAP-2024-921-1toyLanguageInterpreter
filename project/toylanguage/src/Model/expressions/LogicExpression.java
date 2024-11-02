@@ -1,7 +1,8 @@
 package Model.expressions;
 
 import Model.adts.MyIDictionary;
-import Model.exceptions.MyException;
+import Model.exceptions.LogicException;
+import Model.exceptions.VariableException;
 import Model.types.BoolType;
 import Model.values.BoolValue;
 import Model.values.IValue;
@@ -18,7 +19,7 @@ public class LogicExpression implements IExpression {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> table) throws MyException {
+    public IValue eval(MyIDictionary<String, IValue> table) throws LogicException, VariableException {
         IValue leftValue = left.eval(table);
         if (leftValue.getType().equals(new BoolType())) {
             IValue rightValue = right.eval(table);
@@ -32,13 +33,13 @@ public class LogicExpression implements IExpression {
                     case "||" -> {
                         return new BoolValue(leftBool || rightBool);
                     }
-                    default -> throw new MyException("Invalid operator");
+                    default -> throw new LogicException("Invalid operator");
                 }
             } else {
-                throw new MyException("Right expression is not a boolean");
+                throw new LogicException("Right expression is not a boolean");
             }
         } else {
-            throw new MyException("Left expression is not a boolean");
+            throw new LogicException("Left expression is not a boolean");
         }
     }
 

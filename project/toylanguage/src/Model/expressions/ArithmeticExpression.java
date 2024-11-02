@@ -1,7 +1,8 @@
 package Model.expressions;
 
 import Model.adts.MyIDictionary;
-import Model.exceptions.MyException;
+import Model.exceptions.LogicException;
+import Model.exceptions.VariableException;
 import Model.types.IntType;
 import Model.values.IValue;
 import Model.values.IntValue;
@@ -19,7 +20,7 @@ public class ArithmeticExpression implements IExpression {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> table) throws MyException {
+    public IValue eval(MyIDictionary<String, IValue> table) throws LogicException, VariableException {
         IValue v1, v2;
         v1 = e1.eval(table);
 
@@ -38,17 +39,17 @@ public class ArithmeticExpression implements IExpression {
                     case 3 -> new IntValue(n1 * n2);
                     case 4 -> {
                         if (n2 == 0) {
-                            throw new MyException("Division by zero");
+                            throw new LogicException("Division by zero");
                         }
                         yield new IntValue(n1 / n2);
                     }
-                    default -> throw new MyException("Invalid operation code");
+                    default -> throw new LogicException("Invalid operation code");
                 };
             } else {
-                throw new MyException("Second operand is not an integer");
+                throw new LogicException("Second operand is not an integer");
             }
         } else {
-            throw new MyException("First operand is not an integer");
+            throw new LogicException("First operand is not an integer");
         }
     }
 
