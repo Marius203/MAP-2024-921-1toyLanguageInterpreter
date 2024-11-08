@@ -6,6 +6,7 @@ import Model.state.PrgState;
 import Model.statements.IStmt;
 import Repository.IRepository;
 import Repository.Repository;
+import java.io.FileNotFoundException;
 
 public class Controller implements IController{
     public IRepository repo;
@@ -13,10 +14,11 @@ public class Controller implements IController{
 
     public Controller(IRepository repo) {
         this.repo = repo;
+        
     }
 
     @Override
-    public PrgState executeOneStep(PrgState state) throws MyException {
+    public PrgState executeOneStep(PrgState state) throws MyException, FileNotFoundException {
         MyIStack<IStmt> stk = state.getExeStack();
         if (stk.isEmpty()) {
             throw new MyException("Program state stack is empty");
@@ -29,12 +31,18 @@ public class Controller implements IController{
     public void executeAll() {
         try{
             PrgState prg = repo.getCurrentPrgState();
+            repo.logProgramState(prg);
             while (!prg.getExeStack().isEmpty()) {
                 try {
-                    executeOneStep(prg);
+                    try {
+                        executeOneStep(prg);
+                    } catch (FileNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                 } catch (MyException e) {
                     System.out.println(e.getMessage());
                 }
+                repo.logProgramState(prg);
                 displayCurrentProgram();
             }
         } catch (MyException e) {

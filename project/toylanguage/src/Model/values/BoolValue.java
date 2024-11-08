@@ -24,5 +24,10 @@ public class BoolValue implements IValue {
     public String toString() {
         return Boolean.toString(val);
     }
+
+    boolean equals(BoolValue another) {
+        return this.val == another.getVal();
+    }
+
 }
 

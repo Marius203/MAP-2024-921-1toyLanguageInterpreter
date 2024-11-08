@@ -23,5 +23,10 @@ public class IntValue implements IValue {
     public String toString() {
         return Integer.toString(val);
     }
+
+    boolean equals(IntValue another) {
+        return this.val == another.getVal();
+    }
+
 }
 

@@ -8,17 +8,20 @@ import Model.adts.MyList;
 import Model.adts.MyStack;
 import Model.statements.IStmt;
 import Model.values.IValue;
+import java.io.BufferedReader;
 
 
 public class PrgState {
     private final MyIStack<IStmt> exeStack;
     private final MyIDictionary<String, IValue> symTable;
     private final MyIList<IValue> out;
+    private final MyIDictionary<String, BufferedReader> files;
 
     public PrgState(IStmt originalProgram) {
         exeStack = new MyStack<IStmt>();
         symTable = new MyDictionary<String, IValue>();
         out = new MyList<IValue>();
+        files = new MyDictionary<String, BufferedReader>();
         exeStack.push(originalProgram);
     }
 
@@ -26,17 +29,13 @@ public class PrgState {
         return this.exeStack;
     }
 
-    public MyIDictionary<String, IValue> getSymTable() {
-        return this.symTable;
-    }
-
-    public MyIList<IValue> getOut() {
-        return this.out;
-    }
-
     public void setExeStack(MyIStack<IStmt> exeStack) {
         this.exeStack.clear();
         this.exeStack.push(exeStack.pop());
+    }
+
+    public MyIDictionary<String, IValue> getSymTable() {
+        return this.symTable;
     }
 
     public void setSymTable(MyIDictionary<String, IValue> symTable) {
@@ -46,8 +45,23 @@ public class PrgState {
         }
     }
 
+    public MyIList<IValue> getOut() {
+        return this.out;
+    }
+
     public void setOut(MyIList<IValue> out) {
         this.out.clear();
+    }
+
+    public MyIDictionary<String, BufferedReader> getFiles() {
+        return this.files;
+    }
+
+    public void setFiles(MyIDictionary<String, BufferedReader> files) {
+        this.files.clear();
+        for (String key : files.keys()) {
+            this.files.put(key, files.get(key));
+        }
     }
 
     @Override
@@ -56,6 +70,7 @@ public class PrgState {
                 "exeStack:  [ " + exeStack.toString() + " ] \n" +
                 ", symTable: { " + symTable.toString() + " } \n" +
                 ", out: [ " + out.toString() + " ]  \n" +
+                ", files: { " + files.toString() + " }  \n" +
                 "} \n";
     }
 }
