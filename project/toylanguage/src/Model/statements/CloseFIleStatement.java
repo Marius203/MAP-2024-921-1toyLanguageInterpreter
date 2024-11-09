@@ -41,5 +41,10 @@ public class CloseFIleStatement implements IStmt {
 
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "closeFile(" + expression.toString() + ")";
+    }
     
 }

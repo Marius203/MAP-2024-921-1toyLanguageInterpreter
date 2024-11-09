@@ -48,4 +48,9 @@ public class ReadFileStatement implements IStmt{
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "readFile(" + expression.toString() + ")";
+    }
 }
