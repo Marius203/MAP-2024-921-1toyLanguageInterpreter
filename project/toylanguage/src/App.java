@@ -23,6 +23,7 @@ import Model.values.StringValue;
 import Repository.IRepository;
 import Repository.Repository;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
 public static void main(String[] args) {
@@ -83,12 +84,15 @@ public static void main(String[] args) {
         Controller ctrl3 = new Controller(repo3);
 
         //read from file two numbers and print them
-        IStmt openFile = new OpenFileStatement(new ValueExpression(new StringValue("test.in")));
-        IStmt readFile = new ReadFileStatement(new ValueExpression(new StringValue("test.in")), "var");
-        IStmt readFile2 = new ReadFileStatement(new ValueExpression(new StringValue("test.in")), "var2");
+        System.out.println("Enter the file name for statement 4: ");
+        Scanner sc = new Scanner(System.in);
+        String file = sc.nextLine();
+        IStmt openFile = new OpenFileStatement(new ValueExpression(new StringValue(file)));
+        IStmt readFile = new ReadFileStatement(new ValueExpression(new StringValue(file)), "var");
+        IStmt readFile2 = new ReadFileStatement(new ValueExpression(new StringValue(file)), "var2");
         IStmt printVar = new PrintStmt(new VariableExpression("var"));
         IStmt printVar2 = new PrintStmt(new VariableExpression("var2"));
-        IStmt closeFile = new CloseFIleStatement(new ValueExpression(new StringValue("test.in")));
+        IStmt closeFile = new CloseFIleStatement(new ValueExpression(new StringValue(file)));
         IStmt ex4 = new CompStmt(openFile, new CompStmt(readFile, new CompStmt(printVar, new CompStmt(readFile2, new CompStmt(printVar2, closeFile)))));
         
         PrgState prg4 = new PrgState(ex4);
