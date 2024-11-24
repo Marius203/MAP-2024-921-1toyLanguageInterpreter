@@ -16,12 +16,16 @@ public class PrgState {
     private final MyIDictionary<String, IValue> symTable;
     private final MyIList<IValue> out;
     private final MyIDictionary<String, BufferedReader> files;
+    private final MyIDictionary<Integer, IValue> heap;
+    private int firstFree;
 
     public PrgState(IStmt originalProgram) {
         exeStack = new MyStack<IStmt>();
         symTable = new MyDictionary<String, IValue>();
         out = new MyList<IValue>();
         files = new MyDictionary<String, BufferedReader>();
+        heap = new MyDictionary<Integer, IValue>();
+        firstFree = 1;
         exeStack.push(originalProgram);
     }
 
@@ -64,6 +68,25 @@ public class PrgState {
         }
     }
 
+    public MyIDictionary<Integer, IValue> getHeap() {
+        return this.heap;
+    }
+
+    public void setHeap(MyIDictionary<Integer, IValue> heap) {
+        this.heap.clear();
+        for (Integer key : heap.keys()) {
+            this.heap.put(key, heap.get(key));
+        }
+    }
+
+    public int getFirstFree() {
+        return this.firstFree;
+    }
+
+    public void incrementFirstFree() {
+        this.firstFree += 1;
+    }
+
     @Override
     public String toString() {
         return "PrgState: { " +
@@ -71,6 +94,7 @@ public class PrgState {
                 ", symTable: { " + symTable.toString() + " } \n" +
                 ", out: [ " + out.toString() + " ]  \n" +
                 ", files: { " + files.toString() + " }  \n" +
+                ", heap: { " + heap.toString() + " }  \n" +
                 "} \n";
     }
 }

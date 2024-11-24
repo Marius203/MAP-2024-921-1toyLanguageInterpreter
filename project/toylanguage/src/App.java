@@ -110,7 +110,7 @@ public static void main(String[] args) {
                                 new AssignStmt("a", new ValueExpression(new IntValue(2))),
                                 new CompStmt(
                                         new AssignStmt("b", new ValueExpression(new IntValue(5))),
-                                        new PrintStmt(new RationalExpression(new VariableExpression("a"), new VariableExpression("b"), 1))
+                                        new PrintStmt(new RationalExpression(new VariableExpression("a"), new VariableExpression("b"), 4))
                                 )
                         )
                 )
