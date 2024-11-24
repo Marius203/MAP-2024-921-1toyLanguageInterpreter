@@ -1,6 +1,7 @@
 package Model.state;
 
 import Model.adts.MyDictionary;
+import Model.adts.MyHeap;
 import Model.adts.MyIDictionary;
 import Model.adts.MyIList;
 import Model.adts.MyIStack;
@@ -9,14 +10,14 @@ import Model.adts.MyStack;
 import Model.statements.IStmt;
 import Model.values.IValue;
 import java.io.BufferedReader;
-
+import Model.adts.MyIHeap;
 
 public class PrgState {
     private final MyIStack<IStmt> exeStack;
     private final MyIDictionary<String, IValue> symTable;
     private final MyIList<IValue> out;
     private final MyIDictionary<String, BufferedReader> files;
-    private final MyIDictionary<Integer, IValue> heap;
+    private final MyIHeap heap;
     private int firstFree;
 
     public PrgState(IStmt originalProgram) {
@@ -24,7 +25,7 @@ public class PrgState {
         symTable = new MyDictionary<String, IValue>();
         out = new MyList<IValue>();
         files = new MyDictionary<String, BufferedReader>();
-        heap = new MyDictionary<Integer, IValue>();
+        heap = new MyHeap();
         firstFree = 1;
         exeStack.push(originalProgram);
     }
@@ -68,23 +69,8 @@ public class PrgState {
         }
     }
 
-    public MyIDictionary<Integer, IValue> getHeap() {
+    public MyIHeap getHeap() {
         return this.heap;
-    }
-
-    public void setHeap(MyIDictionary<Integer, IValue> heap) {
-        this.heap.clear();
-        for (Integer key : heap.keys()) {
-            this.heap.put(key, heap.get(key));
-        }
-    }
-
-    public int getFirstFree() {
-        return this.firstFree;
-    }
-
-    public void incrementFirstFree() {
-        this.firstFree += 1;
     }
 
     @Override

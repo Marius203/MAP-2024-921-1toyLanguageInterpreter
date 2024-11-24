@@ -3,9 +3,6 @@ package Model.statements;
 import Model.exceptions.MyException;
 import Model.expressions.IExpression;
 import Model.state.PrgState;
-import Model.types.RefType;
-import Model.values.IValue;
-import Model.values.IntValue;
 
 public class HeapReadStmt implements IStmt{
     IExpression expression;
@@ -14,23 +11,10 @@ public class HeapReadStmt implements IStmt{
         this.expression = expression;
     }
 
-    public IExpression getExpression() {
-        return expression;
-    }
-
     @Override
     public PrgState execute(PrgState state) throws MyException{
-        IValue value = expression.eval(state.getSymTable());
-        if (value.getType() instanceof RefType){
-            if (state.getHeap().containsKey(((IntValue)value).getVal())) {
-                state.getSymTable().put(value.toString(), state.getHeap().get(((IntValue)value).getVal()));
-            } else {
-                throw new MyException("The address is not in the heap");
-            }
-        } else {
-            throw new MyException("The type of the variable is not RefType");
-        }
-        return state;
+        expression.eval(state.getSymTable());
+        return null;
     }
 
     @Override

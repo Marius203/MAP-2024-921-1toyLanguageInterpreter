@@ -8,35 +8,27 @@ import Model.values.IValue;
 import Model.values.RefValue;
 
 public class HeapWriteStmt implements IStmt{
-    String varName;
-    IExpression expression;
+    IExpression addressExpr;
+    IExpression valueExpr;
 
-    public HeapWriteStmt(String varName, IExpression expression) {
-        this.varName = varName;
-        this.expression = expression;
+    public HeapWriteStmt(IExpression address, IExpression expression) {
+        this.addressExpr = address;
+        this.valueExpr = expression;
     }
 
     @Override
     public PrgState execute(PrgState state) throws MyException{
-        if (state.getSymTable().containsKey(varName)) {
-            IValue value = state.getSymTable().get(varName);
-            if (value.getType() instanceof RefType) {
-                if (state.getHeap().containsKey(((RefValue)value).getAddress())) {
-                    state.getHeap().put(((RefValue)value).getAddress(), expression.eval(state.getSymTable()));
-                } else {
-                    throw new MyException("The address is not in the heap");
-                }
-            } else {
-                throw new MyException("The type of the variable is not RefType");
-            }
-        } else {
-            throw new MyException("The variable is not in the symbol table");
+        IValue address = addressExpr.eval(state.getSymTable());
+        IValue value = valueExpr.eval(state.getSymTable());
+        if (!(address.getType() instanceof RefType))
+            throw new MyException("Heap should be accessed using references");
+        state.getHeap().write(((RefValue) address).getAddress(), value);
+        return null;
         }
-        return state;
-    }
+
 
     @Override
     public String toString() {
-        return "writeHeap(" + varName + ", " + expression.toString() + ")";
+        return "writeHeap(" + addressExpr.toString() + ", " + valueExpr.toString() + ")";
     }
 }
