@@ -14,6 +14,7 @@ import Model.statements.HeapAllocStmt;
 import Model.statements.HeapWriteStmt;
 import Model.statements.IStmt;
 import Model.statements.IfStmt;
+import Model.statements.NoOperationStatement;
 import Model.statements.OpenFileStatement;
 import Model.statements.PrintStmt;
 import Model.statements.ReadFileStatement;
@@ -223,7 +224,7 @@ public static void main(String[] args) {
         Controller ctrl9 = new Controller(repo9);
 
         //while statement
-        //v=4; (while (v>0) print(v);v=v-1);print(v)
+        //v=4; (while (v>0) print(v);v=v-1)
         IStmt ex10 = new CompStmt(
                 new VariableDeclarationStatement("v", new IntType()),
                 new CompStmt(
@@ -236,7 +237,8 @@ public static void main(String[] args) {
                                                 new AssignStmt("v", new ArithmeticExpression(new VariableExpression("v"), new ValueExpression(new IntValue(1)), 2))
                                         )
                                 ),
-                                new PrintStmt(new VariableExpression("v"))
+                                new NoOperationStatement() //this is needed because the last statement in the while is an assign statement
+                                                          //so we need to add a NoOperationStatement to the end of the program
                         )
                 )
         );
