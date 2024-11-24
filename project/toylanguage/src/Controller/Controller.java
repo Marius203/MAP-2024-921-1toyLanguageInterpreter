@@ -43,6 +43,9 @@ public class Controller implements IController{
                     System.out.println(e.getMessage());
                 }
                 repo.logProgramState(prg);
+                prg.getHeap().setHeap(prg.getHeap().safeGarbageCollector(
+                                            prg.getAddrFromSymTable(prg.getSymTable().getContent().values()),
+                                            prg.getHeap().getHeap()));
                 displayCurrentProgram();
             }
         } catch (MyException e) {

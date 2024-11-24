@@ -124,7 +124,7 @@ public static void main(String[] args) {
         IRepository repo5 = new Repository(prgList5, path);
         Controller ctrl5 = new Controller(repo5);
 
-        //test heapAllocStmt, readHeapStmt, writeHeapStmt, RefType, RefValue
+        //basic heap allocation
         //v=10;new(v,20);new(a,22);print(v);print(a)
         IStmt ex6 = new CompStmt(
                 new VariableDeclarationStatement("v", new IntType()),
@@ -148,7 +148,7 @@ public static void main(String[] args) {
         IRepository repo6 = new Repository(prgList6, path);
         Controller ctrl6 = new Controller(repo6);
 
-        //test heapReadStmt and heapWriteStmt
+        //heap allocation with write and read
         //v=10;new(v,20);new(a,22);wH(a,30);print(a);print(rH(a));a=0
         IStmt ex7 = new CompStmt(
                 new VariableDeclarationStatement("v", new IntType()),
@@ -178,6 +178,48 @@ public static void main(String[] args) {
         IRepository repo7 = new Repository(prgList7, path);
         Controller ctrl7 = new Controller(repo7);
 
+        // double reference
+        // Ref Ref int v;new(v,20);new(a,v);print(rH(a));print(a)
+        IStmt ex8 = new CompStmt(
+                new VariableDeclarationStatement("v", new IntType()),
+                new CompStmt(
+                        new HeapAllocStmt("v", new ValueExpression(new IntValue(20))),
+                        new CompStmt(
+                                new HeapAllocStmt("a", new VariableExpression("v")),
+                                new CompStmt(
+                                        new PrintStmt(new ReadHeapExpression(new VariableExpression("a"))),
+                                        new PrintStmt(new VariableExpression("a"))
+                                        )
+                                )
+                        )
+                );
+
+        PrgState prg8 = new PrgState(ex8);
+        List<PrgState> prgList8 = List.of(prg8);
+        IRepository repo8 = new Repository(prgList8, path);
+        Controller ctrl8 = new Controller(repo8);
+        
+
+        // ref int v; new(v,20); ref ref int a; new (a,v); new(v,30); print(rH(rH(a)))
+        IStmt ex9 = new CompStmt(
+                new VariableDeclarationStatement("v", new IntType()),
+                new CompStmt(
+                        new HeapAllocStmt("v", new ValueExpression(new IntValue(20))),
+                        new CompStmt(
+                                new HeapAllocStmt("a", new VariableExpression("v")),
+                                new CompStmt(
+                                        new HeapAllocStmt("v", new ValueExpression(new IntValue(30))),
+                                        new PrintStmt(new ReadHeapExpression(new ReadHeapExpression(new VariableExpression("a")))
+                                        )
+                                )
+                        )
+                ));
+
+        PrgState prg9 = new PrgState(ex9);
+        List<PrgState> prgList9 = List.of(prg9);
+        IRepository repo9 = new Repository(prgList9, path);
+        Controller ctrl9 = new Controller(repo9);
+
 
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "exit"));
@@ -188,6 +230,8 @@ public static void main(String[] args) {
         menu.addCommand(new RunExampleCommand("5", ex5.toString(), ctrl5));
         menu.addCommand(new RunExampleCommand("6", ex6.toString(), ctrl6));
         menu.addCommand(new RunExampleCommand("7", ex7.toString(), ctrl7));
+        menu.addCommand(new RunExampleCommand("8", ex8.toString(), ctrl8));
+        menu.addCommand(new RunExampleCommand("9", ex9.toString(), ctrl9));
 
         menu.show();
 }

@@ -3,30 +3,32 @@ package Model.state;
 import Model.adts.MyDictionary;
 import Model.adts.MyHeap;
 import Model.adts.MyIDictionary;
+import Model.adts.MyIHeap;
 import Model.adts.MyIList;
 import Model.adts.MyIStack;
 import Model.adts.MyList;
 import Model.adts.MyStack;
 import Model.statements.IStmt;
 import Model.values.IValue;
+import Model.values.RefValue;
 import java.io.BufferedReader;
-import Model.adts.MyIHeap;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PrgState {
     private final MyIStack<IStmt> exeStack;
     private final MyIDictionary<String, IValue> symTable;
     private final MyIList<IValue> out;
     private final MyIDictionary<String, BufferedReader> files;
-    private final MyIHeap heap;
-    private int firstFree;
+    private MyIHeap heap;
 
     public PrgState(IStmt originalProgram) {
-        exeStack = new MyStack<IStmt>();
+        exeStack = new MyStack<>();
         symTable = new MyDictionary<String, IValue>();
         out = new MyList<IValue>();
         files = new MyDictionary<String, BufferedReader>();
         heap = new MyHeap();
-        firstFree = 1;
         exeStack.push(originalProgram);
     }
 
@@ -48,6 +50,13 @@ public class PrgState {
         for (String key : symTable.keys()) {
             this.symTable.put(key, symTable.get(key));
         }
+    }
+
+    public List<Integer> getAddrFromSymTable(Collection<IValue> symTableValues){
+        return symTableValues.stream()
+                .filter(v -> v instanceof RefValue)
+                .map(v -> {RefValue v1 = (RefValue)v; return v1.getAddress();})
+                .collect(Collectors.toList());
     }
 
     public MyIList<IValue> getOut() {
@@ -73,14 +82,20 @@ public class PrgState {
         return this.heap;
     }
 
+    public void setHeap(MyIHeap heap) {
+        this.heap = heap;
+    }
+
     @Override
     public String toString() {
-        return "PrgState: { " +
-                "exeStack:  [ " + exeStack.toString() + " ] \n" +
-                ", symTable: { " + symTable.toString() + " } \n" +
-                ", out: [ " + out.toString() + " ]  \n" +
-                ", files: { " + files.toString() + " }  \n" +
-                ", heap: { " + heap.toString() + " }  \n" +
-                "} \n";
+        return """
+            PrgState: {
+                exeStack:  [ %s ]
+                , symTable: { %s }
+                , out: [ %s ]
+                , files: { %s }
+                , heap: { %s }
+            }
+            """.formatted(exeStack.toString(), symTable.toString(), out.toString(), files.toString(), heap.toString());
     }
 }

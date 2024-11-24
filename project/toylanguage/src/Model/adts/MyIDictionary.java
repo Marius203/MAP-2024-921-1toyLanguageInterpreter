@@ -1,5 +1,6 @@
 package Model.adts;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public interface MyIDictionary<K, V> {
@@ -21,5 +22,7 @@ public interface MyIDictionary<K, V> {
     void clear();
 
     Set<K> keys();
+
+    public HashMap<K, V> getContent();
 
 }

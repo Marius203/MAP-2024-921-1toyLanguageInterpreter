@@ -1,6 +1,7 @@
 package Model.adts;
 
 import Model.values.IValue;
+import java.util.List;
 
 public class MyHeap implements MyIHeap{
     MyIDictionary<Integer, IValue> heap;
@@ -42,6 +43,21 @@ public class MyHeap implements MyIHeap{
     public MyIDictionary<Integer, IValue> getHeap(){
         return heap;
     }
+
+    @Override
+    public void setHeap(MyIDictionary<Integer, IValue> heap){
+        this.heap = heap;
+    }
+
+    @Override
+    public MyIDictionary<Integer, IValue> safeGarbageCollector(List<Integer> usedAddresses, MyIDictionary<Integer, IValue> heap) {
+        MyIDictionary<Integer, IValue> newHeap = new MyDictionary<>();
+        heap.getContent().entrySet().stream()
+                .filter(entry -> usedAddresses.contains(entry.getKey()))
+                .forEach(entry -> newHeap.put(entry.getKey(), entry.getValue()));
+        return newHeap;
+    }
+
 
     @Override
     public String toString(){

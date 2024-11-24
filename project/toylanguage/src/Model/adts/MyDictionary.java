@@ -11,6 +11,11 @@ public class MyDictionary<K, V> implements MyIDictionary<K, V>{
     }
 
     @Override
+    public HashMap<K, V> getContent() {
+        return dictionary;
+    }
+
+    @Override
     public void put(K key, V value) {
         dictionary.put(key, value);
     }

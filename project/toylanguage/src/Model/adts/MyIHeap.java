@@ -1,6 +1,7 @@
 package Model.adts;
 
 import Model.values.IValue;
+import java.util.List;
 
 public interface MyIHeap {
     int allocate(IValue value);
@@ -8,5 +9,7 @@ public interface MyIHeap {
     void write(int address, IValue value);
     void deallocate(int address);
     int getFirstFree();
+    MyIDictionary<Integer, IValue> safeGarbageCollector(List<Integer> usedAddresses, MyIDictionary<Integer, IValue> heap);
     MyIDictionary<Integer, IValue> getHeap();
+    void setHeap(MyIDictionary<Integer, IValue> heap);
 }
