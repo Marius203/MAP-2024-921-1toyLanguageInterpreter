@@ -1,6 +1,7 @@
 package Model.expressions;
 
 import Model.adts.MyIDictionary;
+import Model.adts.MyIHeap;
 import Model.exceptions.LogicException;
 import Model.exceptions.VariableException;
 import Model.types.BoolType;
@@ -19,10 +20,10 @@ public class LogicExpression implements IExpression {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> table) throws LogicException, VariableException {
-        IValue leftValue = left.eval(table);
+    public IValue eval(MyIDictionary<String, IValue> table, MyIHeap heap) throws LogicException, VariableException {
+        IValue leftValue = left.eval(table, heap);
         if (leftValue.getType().equals(new BoolType())) {
-            IValue rightValue = right.eval(table);
+            IValue rightValue = right.eval(table, heap);
             if (rightValue.getType().equals(new BoolType())) {
                 boolean leftBool = ((BoolValue) leftValue).getVal();
                 boolean rightBool = ((BoolValue) rightValue).getVal();

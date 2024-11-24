@@ -11,6 +11,7 @@ public class MyHeap implements MyIHeap{
         firstFree = 1;
     }
 
+    @Override
     public int getFirstFree(){
         return firstFree;
     }

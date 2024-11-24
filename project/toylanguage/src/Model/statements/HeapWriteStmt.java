@@ -18,8 +18,8 @@ public class HeapWriteStmt implements IStmt{
 
     @Override
     public PrgState execute(PrgState state) throws MyException{
-        IValue address = addressExpr.eval(state.getSymTable());
-        IValue value = valueExpr.eval(state.getSymTable());
+        IValue address = addressExpr.eval(state.getSymTable(), state.getHeap());
+        IValue value = valueExpr.eval(state.getSymTable(), state.getHeap());
         if (!(address.getType() instanceof RefType))
             throw new MyException("Heap should be accessed using references");
         state.getHeap().write(((RefValue) address).getAddress(), value);

@@ -1,11 +1,13 @@
 package Model.expressions;
 
 import Model.adts.MyIDictionary;
+import Model.adts.MyIHeap;
 import Model.exceptions.LogicException;
 import Model.exceptions.VariableException;
 import Model.types.IntType;
 import Model.values.IValue;
 import Model.values.IntValue;
+
 
 public class ArithmeticExpression implements IExpression {
 
@@ -20,12 +22,12 @@ public class ArithmeticExpression implements IExpression {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> table) throws LogicException, VariableException {
+    public IValue eval(MyIDictionary<String, IValue> table, MyIHeap heap) throws LogicException, VariableException {
         IValue v1, v2;
-        v1 = e1.eval(table);
+        v1 = e1.eval(table, heap);
 
         if (v1.getType().equals(new IntType())) {
-            v2 = e2.eval(table);
+            v2 = e2.eval(table, heap);
             if (v2.getType().equals(new IntType())) {
                 IntValue i1 = (IntValue) v1;
                 IntValue i2 = (IntValue) v2;

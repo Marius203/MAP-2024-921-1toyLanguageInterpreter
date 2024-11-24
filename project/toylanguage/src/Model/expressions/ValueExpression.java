@@ -1,6 +1,7 @@
 package Model.expressions;
 
 import Model.adts.MyIDictionary;
+import Model.adts.MyIHeap;
 import Model.values.IValue;
 
 public class ValueExpression implements IExpression {
@@ -11,7 +12,7 @@ public class ValueExpression implements IExpression {
     }
 
     @Override
-    public IValue eval(MyIDictionary<String, IValue> table) {
+    public IValue eval(MyIDictionary<String, IValue> table, MyIHeap heap) {
         return value;
     }
 

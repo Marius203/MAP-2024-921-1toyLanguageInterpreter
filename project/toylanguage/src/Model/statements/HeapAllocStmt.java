@@ -17,7 +17,7 @@ public class HeapAllocStmt implements IStmt{
 
     @Override
     public PrgState execute(PrgState state) throws MyException{
-        IValue value = expression.eval(state.getSymTable());
+        IValue value = expression.eval(state.getSymTable(), state.getHeap());
         state.getSymTable().put(name, new RefValue(state.getHeap().allocate(value), value.getType()));
         return null;
     }

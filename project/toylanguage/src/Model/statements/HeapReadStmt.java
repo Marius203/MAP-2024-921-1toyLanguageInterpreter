@@ -13,7 +13,7 @@ public class HeapReadStmt implements IStmt{
 
     @Override
     public PrgState execute(PrgState state) throws MyException{
-        expression.eval(state.getSymTable());
+        expression.eval(state.getSymTable(), state.getHeap());
         return null;
     }
 

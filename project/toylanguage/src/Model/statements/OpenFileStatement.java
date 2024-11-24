@@ -20,7 +20,7 @@ public class OpenFileStatement implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) throws MyException, FileNotFoundException {
-        IValue value = this.expression.eval(state.getSymTable());
+        IValue value = this.expression.eval(state.getSymTable(), state.getHeap());
         if (!(value.getType() instanceof StringType)) {
             throw new MyException("Filename did not evaluate to string");
         }

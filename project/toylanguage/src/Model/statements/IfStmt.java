@@ -20,7 +20,7 @@ public class IfStmt implements IStmt {
     
     @Override
     public PrgState execute(PrgState state) throws MyException {
-        IValue cond = exp.eval(state.getSymTable());
+        IValue cond = exp.eval(state.getSymTable(), state.getHeap());
         if (cond instanceof BoolValue) {
             boolean boolCond = ((BoolValue) cond).getVal();
             state.getExeStack().push(boolCond ? thenS : elseS);

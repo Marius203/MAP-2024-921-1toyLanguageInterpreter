@@ -3,12 +3,15 @@ import Model.commands.ExitCommand;
 import Model.commands.RunExampleCommand;
 import Model.expressions.ArithmeticExpression;
 import Model.expressions.RationalExpression;
+import Model.expressions.ReadHeapExpression;
 import Model.expressions.ValueExpression;
 import Model.expressions.VariableExpression;
 import Model.state.PrgState;
 import Model.statements.AssignStmt;
 import Model.statements.CloseFIleStatement;
 import Model.statements.CompStmt;
+import Model.statements.HeapAllocStmt;
+import Model.statements.HeapWriteStmt;
 import Model.statements.IStmt;
 import Model.statements.IfStmt;
 import Model.statements.OpenFileStatement;
@@ -121,6 +124,60 @@ public static void main(String[] args) {
         IRepository repo5 = new Repository(prgList5, path);
         Controller ctrl5 = new Controller(repo5);
 
+        //test heapAllocStmt, readHeapStmt, writeHeapStmt, RefType, RefValue
+        //v=10;new(v,20);new(a,22);print(v);print(a)
+        IStmt ex6 = new CompStmt(
+                new VariableDeclarationStatement("v", new IntType()),
+                new CompStmt(
+                        new AssignStmt("v", new ValueExpression(new IntValue(10))),
+                        new CompStmt(
+                                new HeapAllocStmt("v", new ValueExpression(new IntValue(20))),
+                                new CompStmt(
+                                        new HeapAllocStmt("a", new ValueExpression(new IntValue(22))),
+                                        new CompStmt(
+                                                new PrintStmt(new VariableExpression("v")),
+                                                new PrintStmt(new VariableExpression("a"))
+                                        )
+                                )
+                        )
+                )
+        );
+
+        PrgState prg6 = new PrgState(ex6);
+        List<PrgState> prgList6 = List.of(prg6);
+        IRepository repo6 = new Repository(prgList6, path);
+        Controller ctrl6 = new Controller(repo6);
+
+        //test heapReadStmt and heapWriteStmt
+        //v=10;new(v,20);new(a,22);wH(a,30);print(a);print(rH(a));a=0
+        IStmt ex7 = new CompStmt(
+                new VariableDeclarationStatement("v", new IntType()),
+                new CompStmt(
+                        new AssignStmt("v", new ValueExpression(new IntValue(10))),
+                        new CompStmt(
+                                new HeapAllocStmt("v", new ValueExpression(new IntValue(20))),
+                                new CompStmt(
+                                        new HeapAllocStmt("a", new ValueExpression(new IntValue(22))),
+                                        new CompStmt(
+                                                new HeapWriteStmt(new VariableExpression("a"), new ValueExpression(new IntValue(30))),
+                                                new CompStmt(
+                                                        new PrintStmt(new VariableExpression("a")),
+                                                        new CompStmt(
+                                                                new PrintStmt(new ReadHeapExpression(new VariableExpression("a"))),
+                                                                new AssignStmt("a", new ValueExpression(new IntValue(0)))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+
+        PrgState prg7 = new PrgState(ex7);
+        List<PrgState> prgList7 = List.of(prg7);
+        IRepository repo7 = new Repository(prgList7, path);
+        Controller ctrl7 = new Controller(repo7);
+
 
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "exit"));
@@ -129,6 +186,8 @@ public static void main(String[] args) {
         menu.addCommand(new RunExampleCommand("3", ex3.toString(), ctrl3));
         menu.addCommand(new RunExampleCommand("4", ex4.toString(), ctrl4));
         menu.addCommand(new RunExampleCommand("5", ex5.toString(), ctrl5));
+        menu.addCommand(new RunExampleCommand("6", ex6.toString(), ctrl6));
+        menu.addCommand(new RunExampleCommand("7", ex7.toString(), ctrl7));
 
         menu.show();
 }
