@@ -3,6 +3,7 @@ package Model.statements;
 import Model.exceptions.MyException;
 import Model.expressions.IExpression;
 import Model.state.PrgState;
+import Model.types.RefType;
 import Model.values.IValue;
 
 public class HeapAllocStmt implements IStmt{
@@ -20,7 +21,7 @@ public class HeapAllocStmt implements IStmt{
         if (state.getSymTable().containsKey(name)) {
             // check if the type is RefType
             IValue value = expression.eval(state.getSymTable());
-            if (state.getSymTable().get(name).getType().equals(value.getType())) {
+            if (value.getType() instanceof RefType){
                 int address = state.getFirstFree();
                 state.getHeap().put(address, value);
                 state.getSymTable().put(name, state.getHeap().get(address));
@@ -33,5 +34,10 @@ public class HeapAllocStmt implements IStmt{
             throw new MyException("The variable is not in the symbol table");
         }
         return state;
+    }
+
+    @Override
+    public String toString() {
+        return "new(" + name + ", " + expression.toString() + ")";
     }
 }
