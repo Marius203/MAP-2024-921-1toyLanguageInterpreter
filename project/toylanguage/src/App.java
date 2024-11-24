@@ -18,6 +18,7 @@ import Model.statements.OpenFileStatement;
 import Model.statements.PrintStmt;
 import Model.statements.ReadFileStatement;
 import Model.statements.VariableDeclarationStatement;
+import Model.statements.WhileStmt;
 import Model.types.BoolType;
 import Model.types.IntType;
 import Model.values.BoolValue;
@@ -201,6 +202,7 @@ public static void main(String[] args) {
         
 
         // ref int v; new(v,20); ref ref int a; new (a,v); new(v,30); print(rH(rH(a)))
+        // THIS WILL NOT WORK
         IStmt ex9 = new CompStmt(
                 new VariableDeclarationStatement("v", new IntType()),
                 new CompStmt(
@@ -220,6 +222,29 @@ public static void main(String[] args) {
         IRepository repo9 = new Repository(prgList9, path);
         Controller ctrl9 = new Controller(repo9);
 
+        //while statement
+        //v=4; (while (v>0) print(v);v=v-1);print(v)
+        IStmt ex10 = new CompStmt(
+                new VariableDeclarationStatement("v", new IntType()),
+                new CompStmt(
+                        new AssignStmt("v", new ValueExpression(new IntValue(4))),
+                        new CompStmt(
+                                new WhileStmt(
+                                        new RationalExpression(new VariableExpression("v"), new ValueExpression(new IntValue(0)),3),
+                                        new CompStmt(
+                                                new PrintStmt(new VariableExpression("v")),
+                                                new AssignStmt("v", new ArithmeticExpression(new VariableExpression("v"), new ValueExpression(new IntValue(1)), 2))
+                                        )
+                                ),
+                                new PrintStmt(new VariableExpression("v"))
+                        )
+                )
+        );
+
+        PrgState prg10 = new PrgState(ex10);
+        List<PrgState> prgList10 = List.of(prg10);
+        IRepository repo10 = new Repository(prgList10, path);
+        Controller ctrl10 = new Controller(repo10);
 
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "exit"));
@@ -232,6 +257,7 @@ public static void main(String[] args) {
         menu.addCommand(new RunExampleCommand("7", ex7.toString(), ctrl7));
         menu.addCommand(new RunExampleCommand("8", ex8.toString(), ctrl8));
         menu.addCommand(new RunExampleCommand("9", ex9.toString(), ctrl9));
+        menu.addCommand(new RunExampleCommand("10", ex10.toString(), ctrl10));
 
         menu.show();
 }
