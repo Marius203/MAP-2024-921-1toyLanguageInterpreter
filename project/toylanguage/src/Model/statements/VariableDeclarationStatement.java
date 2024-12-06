@@ -25,7 +25,8 @@ public class VariableDeclarationStatement  implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws MyException {
         state.getSymTable().put(name, type.defaultValue());
-        return state;
+        System.out.println("Variable " + name + " of type " + type + " declared");
+        return null;
     }
 
 }

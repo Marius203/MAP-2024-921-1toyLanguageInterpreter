@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class Repository implements IRepository {
-    private final List<PrgState> prgList;
+    private List<PrgState> prgList;
     String logFilePath;
 
     public Repository(List<PrgState> prglist, String path) {
@@ -18,13 +18,13 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public PrgState getCurrentPrgState() throws MyException {
-        if(prgList.isEmpty()){
-            throw new MyException("Program list is empty. Execution finished!");
-            }
-        PrgState currentPrg = prgList.get(prgList.size()-1);
-//        prgList.remove(prgList.size() - 1);
-        return currentPrg;
+    public List<PrgState> getPrgList() throws MyException {
+        return prgList;
+    }
+
+    @Override
+    public void setPrgList(List<PrgState> prgList) {
+        this.prgList = prgList;
     }
 
     @Override

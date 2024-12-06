@@ -10,7 +10,7 @@ public class NoOperationStatement implements IStmt {
 
     @Override
     public PrgState execute(PrgState state) {
-        return state;
+        return null;
     }
 
 }

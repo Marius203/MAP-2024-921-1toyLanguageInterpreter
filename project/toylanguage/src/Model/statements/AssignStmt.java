@@ -33,7 +33,7 @@ public class AssignStmt implements IStmt {
         } else {
             throw new AssignException("Variable " + id + " is not declared.");
         }
-        return state;
+        return null;
     }
     
     @Override

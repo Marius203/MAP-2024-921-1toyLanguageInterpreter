@@ -1,15 +1,18 @@
 package Controller;
 
-import Model.adts.MyIStack;
 import Model.exceptions.MyException;
 import Model.state.PrgState;
-import Model.statements.IStmt;
 import Repository.IRepository;
 import Repository.Repository;
-import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class Controller implements IController{
     public IRepository repo;
+    public ExecutorService executor;
 
 
     public Controller(IRepository repo) {
@@ -17,49 +20,60 @@ public class Controller implements IController{
         
     }
 
-    @Override
-    public PrgState executeOneStep(PrgState state) throws MyException, FileNotFoundException {
-        MyIStack<IStmt> stk = state.getExeStack();
-        if (stk.isEmpty()) {
-            throw new MyException("Program state stack is empty");
+    public List<PrgState> removeCompletedPrg(List<PrgState> inPrgList) throws MyException {
+        return inPrgList.stream()
+                .filter(PrgState::isNotCompleted)
+                .collect(Collectors.toList());
+    }
+
+    void oneStepForAllPrg(List<PrgState> prgList){
+        prgList.forEach(prg -> repo.logProgramState(prg));
+        List<Callable<PrgState>> callList = prgList.stream()
+                                            .map((PrgState p) -> (Callable<PrgState>)(() -> {return p.executeOneStep();}))
+                                            .collect(Collectors.toList());
+        List<PrgState> newPrgList = null;
+        try {
+            newPrgList = executor.invokeAll(callList).stream()
+                    .map(future -> {
+                        try {
+                            return future.get();
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                        return null;
+                    })
+                    .filter(p -> p != null)
+                    .collect(Collectors.toList()); // Missing semicolon added here
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-        IStmt currentStmt = stk.pop();
-        return currentStmt.execute(state);
+        prgList.addAll(newPrgList);
+        prgList.forEach(prg -> repo.logProgramState(prg));
+        repo.setPrgList(prgList);
     }
 
     @Override
     public void executeAll() {
-        try{
-            PrgState prg = repo.getCurrentPrgState();
-            repo.logProgramState(prg);
-            while (!prg.getExeStack().isEmpty()) {
-                try {
-                    try {
-                        executeOneStep(prg);
-                    } catch (FileNotFoundException e) {
-                        System.out.println(e.getMessage());
-                    }
-                } catch (MyException e) {
-                    System.out.println(e.getMessage());
-                }
-                repo.logProgramState(prg);
-                prg.getHeap().setHeap(prg.getHeap().safeGarbageCollector(
-                                            prg.getAddrFromSymTable(prg.getSymTable().getContent().values()),
-                                            prg.getHeap().getHeap()));
-                displayCurrentProgram();
+        executor = Executors.newFixedThreadPool(2);
+        List<PrgState> prgList;
+        try {
+            prgList = removeCompletedPrg(repo.getPrgList());
+        } catch (MyException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
+        while (prgList.size() > 0) {
+            
+            oneStepForAllPrg(prgList);
+            try {
+                prgList = removeCompletedPrg(repo.getPrgList());
+            } catch (MyException e) {
+                System.err.println(e.getMessage());
+                return;
             }
-        } catch (MyException e) {
-            System.out.println(e.getMessage());
         }
-    }
-
-    @Override
-    public void displayCurrentProgram() {
-        try{
-            System.out.println(repo.getCurrentPrgState().toString());
-        } catch (MyException e) {
-            System.out.println(e.getMessage());
-        }
+        executor.shutdownNow();
+        repo.setPrgList(prgList);
     }
 
     @Override
