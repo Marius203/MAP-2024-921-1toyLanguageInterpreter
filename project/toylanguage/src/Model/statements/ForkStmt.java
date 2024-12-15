@@ -1,7 +1,10 @@
 package Model.statements;
 
+import Model.adts.MyIDictionary;
 import Model.adts.MyStack;
+import Model.exceptions.MyException;
 import Model.state.PrgState;
+import Model.types.IType;
 
 public class ForkStmt implements IStmt {
     private final IStmt stmt;
@@ -29,6 +32,11 @@ public class ForkStmt implements IStmt {
     @Override
     public String toString() {
         return "fork(" + stmt.toString() + ")";
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typeCheck(MyIDictionary<String, IType> typeEnv) throws MyException {
+        return stmt.typeCheck(typeEnv);
     }
 
 }

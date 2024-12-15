@@ -1,8 +1,11 @@
 package Model.statements;
 
+import Model.adts.MyIDictionary;
 import Model.exceptions.MyException;
 import Model.expressions.IExpression;
 import Model.state.PrgState;
+import Model.types.IType;
+import Model.types.RefType;
 import Model.values.IValue;
 import Model.values.RefValue;
 
@@ -26,5 +29,16 @@ public class HeapAllocStmt implements IStmt{
     @Override
     public String toString() {
         return "new(" + name + ", " + expression.toString() + ")";
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typeCheck(MyIDictionary<String, IType> typeEnv) throws MyException {
+        typeEnv.put(name, new RefType(expression.typeCheck(typeEnv)));
+        IType typevar = typeEnv.get(name);
+        IType typexp = expression.typeCheck(typeEnv);
+        if(typevar != null && typevar.equals(new RefType(typexp))){
+            return typeEnv;
+        }
+    throw new MyException("HeapAlloc: right hand side and left hand side have different types");
     }
 }

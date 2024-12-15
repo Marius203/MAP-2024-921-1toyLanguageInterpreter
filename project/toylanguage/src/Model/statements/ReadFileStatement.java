@@ -4,6 +4,7 @@ import Model.adts.MyIDictionary;
 import Model.exceptions.MyException;
 import Model.expressions.IExpression;
 import Model.state.PrgState;
+import Model.types.IType;
 import Model.types.StringType;
 import Model.values.IValue;
 import Model.values.IntValue;
@@ -52,5 +53,15 @@ public class ReadFileStatement implements IStmt{
     @Override
     public String toString() {
         return "readFile(" + expression.toString() + ")";
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typeCheck(MyIDictionary<String, Model.types.IType> typeEnv) throws MyException {
+        Model.types.IType type = expression.typeCheck(typeEnv);
+        if (type instanceof StringType) {
+            return typeEnv;
+        } else {
+            throw new MyException("ReadFile: " + expression.toString() + " is not a StringType");
+        }
     }
 }

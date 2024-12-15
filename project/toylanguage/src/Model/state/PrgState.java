@@ -10,6 +10,7 @@ import Model.adts.MyList;
 import Model.adts.MyStack;
 import Model.exceptions.MyException;
 import Model.statements.IStmt;
+import Model.types.IType;
 import Model.values.IValue;
 import Model.values.RefValue;
 import java.io.BufferedReader;
@@ -35,7 +36,8 @@ public class PrgState {
         files = new MyDictionary<String, BufferedReader>();
         heap = new MyHeap();
         exeStack.push(originalProgram);
-        this.id = nextId++;
+        this.id = nextId;
+        nextId = nextId + 1;
     }
 
     public PrgState(MyIStack<IStmt> exeStack, MyIDictionary<String, IValue> symTable, MyIList<IValue> out, MyIDictionary<String, BufferedReader> files, MyIHeap heap) {
@@ -44,7 +46,8 @@ public class PrgState {
         this.out = out;
         this.files = files;
         this.heap = heap;
-        this.id = nextId++;
+        this.id = nextId;
+        nextId = nextId + 1;
     }
 
 
@@ -129,6 +132,6 @@ public class PrgState {
                 , files: { %s }
                 , heap: { %s }
             }
-            """.formatted(id,exeStack.toString(), symTable.toString(), out.toString(), files.toString(), heap.toString());
+            """.formatted(id, exeStack.toString(), symTable.toString(), out.toString(), files.toString(), heap.toString());
     }
 }

@@ -4,6 +4,8 @@ import Model.adts.MyIDictionary;
 import Model.adts.MyIHeap;
 import Model.exceptions.LogicException;
 import Model.exceptions.VariableException;
+import Model.types.BoolType;
+import Model.types.IType;
 import Model.types.IntType;
 import Model.values.BoolValue;
 import Model.values.IValue;
@@ -62,6 +64,22 @@ public class RationalExpression implements IExpression{
             case 6 -> e1.toString() + "!=" + e2.toString();
             default -> "Invalid operation code";
         };
+    }
+
+    @Override
+    public IType typeCheck(MyIDictionary<String, IType> typeEnv) throws LogicException {
+        IType type1, type2;
+        type1 = e1.typeCheck(typeEnv);
+        type2 = e2.typeCheck(typeEnv);
+        if (type1.equals(new IntType())) {
+            if (type2.equals(new IntType())) {
+                return new BoolType();
+            } else {
+                throw new LogicException("Second operand is not an integer");
+            }
+        } else {
+            throw new LogicException("First operand is not an integer");
+        }
     }
 
 }

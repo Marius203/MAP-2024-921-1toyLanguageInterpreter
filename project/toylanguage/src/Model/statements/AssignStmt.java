@@ -26,8 +26,10 @@ public class AssignStmt implements IStmt {
         if (symTbl.containsKey(id)) {
             IValue val = exp.eval(symTbl, heap);
             IType typeId = symTbl.get(id).getType();
-            if (val.getType().equals(typeId))
+            if (val.getType().equals(typeId)){
                 symTbl.update(id, val);
+                System.out.println("Variable " + id + " has been updated to " + val.toString());
+            }
             else
                 throw new AssignException("Incompatible types for variable " + id);
         } else {
@@ -39,5 +41,15 @@ public class AssignStmt implements IStmt {
     @Override
     public String toString() {
         return id + "=" + exp.toString();
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typeCheck(MyIDictionary<String, IType> typeEnv) throws LogicException {
+        IType typeVar = typeEnv.get(id);
+        IType typeExp = exp.typeCheck(typeEnv);
+        if (typeVar.equals(typeExp))
+            return typeEnv;
+        else
+            throw new LogicException(this.toString() + " : Assignment: right hand side and left hand side have different types");
     }
 }

@@ -39,5 +39,15 @@ public class OpenFileStatement implements IStmt {
     public String toString() {
         return "openFile(" + expression.toString() + ")";
     }
+
+    @Override
+    public MyIDictionary<String, Model.types.IType> typeCheck(MyIDictionary<String, Model.types.IType> typeEnv) throws MyException {
+        Model.types.IType type = expression.typeCheck(typeEnv);
+        if (type instanceof StringType) {
+            return typeEnv;
+        } else {
+            throw new MyException("OpenFile: " + expression.toString() + " is not a StringType");
+        }
+    }
     
 }

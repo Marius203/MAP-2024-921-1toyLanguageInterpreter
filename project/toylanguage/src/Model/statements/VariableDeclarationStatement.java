@@ -1,5 +1,6 @@
 package Model.statements;
 
+import Model.adts.MyIDictionary;
 import Model.exceptions.MyException;
 import Model.state.PrgState;
 import Model.types.IType;
@@ -29,4 +30,9 @@ public class VariableDeclarationStatement  implements IStmt {
         return null;
     }
 
+    @Override
+    public MyIDictionary<String, IType> typeCheck(MyIDictionary<String, IType> typeEnv) throws MyException {
+        typeEnv.put(name, type);
+        return typeEnv;
+    }
 }

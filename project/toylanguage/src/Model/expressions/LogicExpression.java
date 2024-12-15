@@ -5,6 +5,7 @@ import Model.adts.MyIHeap;
 import Model.exceptions.LogicException;
 import Model.exceptions.VariableException;
 import Model.types.BoolType;
+import Model.types.IType;
 import Model.values.BoolValue;
 import Model.values.IValue;
 
@@ -49,4 +50,19 @@ public class LogicExpression implements IExpression {
         return "(" + left + " " + operator + " " + right + ")";
     }
 
+    @Override
+    public IType typeCheck(MyIDictionary<String, IType> typeEnv) throws LogicException {
+        IType type1, type2;
+        type1 = left.typeCheck(typeEnv);
+        type2 = right.typeCheck(typeEnv);
+        if (type1.equals(new BoolType())) {
+            if (type2.equals(new BoolType())) {
+                return new BoolType();
+            } else {
+                throw new LogicException("Second operand is not a boolean");
+            }
+        } else {
+            throw new LogicException("First operand is not a boolean");
+        }
+    }
 }

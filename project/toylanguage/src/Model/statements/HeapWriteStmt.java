@@ -1,8 +1,10 @@
 package Model.statements;
 
+import Model.adts.MyIDictionary;
 import Model.exceptions.MyException;
 import Model.expressions.IExpression;
 import Model.state.PrgState;
+import Model.types.IType;
 import Model.types.RefType;
 import Model.values.IValue;
 import Model.values.RefValue;
@@ -30,5 +32,18 @@ public class HeapWriteStmt implements IStmt{
     @Override
     public String toString() {
         return "writeHeap(" + addressExpr.toString() + ", " + valueExpr.toString() + ")";
+    }
+
+    @Override
+    public MyIDictionary<String, IType> typeCheck(MyIDictionary<String, IType> typeEnv) throws MyException {
+        IType typeAddress = addressExpr.typeCheck(typeEnv);
+        IType typeValue = valueExpr.typeCheck(typeEnv);
+        if (typeAddress instanceof RefType refType) {
+            if (refType.getInner().equals(typeValue))
+                return typeEnv;
+            else
+                throw new MyException("WriteHeap: right hand side and left hand side have different types");
+        } else
+            throw new MyException("WriteHeap: expression is not a reference");
     }
 }

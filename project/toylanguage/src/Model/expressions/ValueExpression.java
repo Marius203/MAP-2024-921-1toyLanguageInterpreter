@@ -2,6 +2,7 @@ package Model.expressions;
 
 import Model.adts.MyIDictionary;
 import Model.adts.MyIHeap;
+import Model.types.IType;
 import Model.values.IValue;
 
 public class ValueExpression implements IExpression {
@@ -21,4 +22,8 @@ public class ValueExpression implements IExpression {
         return value.toString();
     }
 
+    @Override
+    public IType typeCheck(MyIDictionary<String, IType> typeEnv) {
+        return value.getType();
+    }
 }
